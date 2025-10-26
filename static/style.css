@@ -1,0 +1,82 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f2eafa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #b891ff;
+}
+
+h2 {
+    margin-top: 30px;
+    color: #d4b3ff;
+}
+
+form {
+    margin-top: 20px;
+    padding: 10px;
+    background: #f9f3ff;
+    border-radius: 12px;
+}
+
+input[type="file"], input[type="number"], button {
+    margin: 10px 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #b891ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #d4b3ff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background: #d4b3ff;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f5eaff;
+}
+
+tr:hover {
+    background: #e3ccff;
+}
+
+/* Esto es lo que preguntaste */
+.unique-values {
+    font-weight: bold;
+    color: #6b3cb3;
+}

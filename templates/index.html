@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dataset Explorer</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: #4b2f8c;
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Botón de subir archivo */
+        .custom-file-upload {
+            border: 1px solid #d4b3ff;
+            display: inline-block;
+            padding: 8px 20px;
+            cursor: pointer;
+            border-radius: 12px;
+            background-color: #e8d9ff; /* color más clarito */
+            color: #4b2f8c;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #d4b3ff;
+        }
+
+        input[type="number"] {
+            padding: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 60px;
+            margin-left: 5px;
+        }
+
+        button {
+            padding: 8px 20px;
+            border-radius: 12px;
+            border: none;
+            background-color: #d4b3ff;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #b891ff;
+            color: white;
+        }
+
+        /* Contenedor de columnas detectadas */
+        .columns-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .column-badge {
+            background-color: #f0e6ff;
+            border: 1px solid #d4b3ff;
+            border-radius: 12px;
+            padding: 5px 12px;
+            font-size: 0.9em;
+            color: #4b2f8c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #d4b3ff;
+        }
+
+        p.error {
+            color: red;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dataset Explorer</h1>
+
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <p>Sube tu CSV y luego selecciona las columnas que quieres analizar.</p>
+
+        <!-- Formulario de subida de CSV -->
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label class="custom-file-upload">
+                Seleccionar CSV
+                <input type="file" name="file" required>
+            </label>
+            <button type="submit">Subir CSV</button>
+        </form>
+
+        <!-- Columnas detectadas como badges -->
+        {% if columns and filename %}
+        <h2>Columnas detectadas para {{ filename }}</h2>
+        <form action="/process" method="post">
+            <div class="columns-container">
+                {% for col in columns %}
+                <label class="column-badge">
+                    <input type="checkbox" name="selected_columns" value="{{ col }}" checked>
+                    {{ col }}
+                </label>
+                {% endfor %}
+            </div>
+            <label for="limit">Valores a mostrar:</label>
+            <input type="number" name="limit" value="5" min="1">
+            <button type="submit">Ver resumen</button>
+        </form>
+        {% endif %}
+
+        <!-- Resultado del resumen -->
+        {% if result %}
+        <h2>Resumen de columnas</h2>
+        <table>
+            <tr>
+                <th>Columna</th>
+                <th>Valores Únicos</th>
+            </tr>
+            {{ result | safe }}
+        </table>
+
+        <form action="/download" method="post">
+            <input type="hidden" name="csv_data" value="{{ download_csv }}">
+            <button type="submit">Descargar CSV de resumen</button>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>
