@@ -46,6 +46,11 @@
 
         .custom-file-upload:hover {
             background-color: #d4b3ff;
+            color: white;
+        }
+
+        input[type="file"] {
+            display: none;
         }
 
         input[type="number"] {
@@ -89,6 +94,8 @@
             padding: 5px 12px;
             font-size: 0.9em;
             color: #4b2f8c;
+            display: flex;
+            align-items: center;
         }
 
         table {
@@ -111,7 +118,6 @@
             color: red;
             text-align: center;
         }
-
     </style>
 </head>
 <body>
@@ -126,9 +132,9 @@
 
         <!-- Formulario de subida de CSV -->
         <form action="/upload" method="post" enctype="multipart/form-data">
-            <label class="custom-file-upload">
+            <label class="custom-file-upload" id="file-label">
                 Seleccionar CSV
-                <input type="file" name="file" required>
+                <input type="file" name="file" id="file-input" required>
             </label>
             <button type="submit">Subir CSV</button>
         </form>
@@ -168,5 +174,19 @@
         </form>
         {% endif %}
     </div>
+
+    <!-- Script para mostrar nombre de archivo -->
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const fileLabel = document.getElementById('file-label');
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileLabel.textContent = fileInput.files[0].name;
+            } else {
+                fileLabel.textContent = "Seleccionar CSV";
+            }
+        });
+    </script>
 </body>
 </html>
