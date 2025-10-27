@@ -31,34 +31,25 @@
             text-align: center;
         }
 
-        /* Botón de subir archivo */
-        .custom-file-upload {
-            border: 1px solid #d4b3ff;
-            display: inline-block;
-            padding: 8px 20px;
-            cursor: pointer;
-            border-radius: 12px;
-            background-color: #e8d9ff; /* color más clarito */
-            color: #4b2f8c;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .custom-file-upload:hover {
-            background-color: #d4b3ff;
-            color: white;
-        }
-
-        input[type="file"] {
+        /* Botón de subir archivo estilizado */
+        #file-input {
             display: none;
         }
 
-        input[type="number"] {
-            padding: 5px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            width: 60px;
-            margin-left: 5px;
+        label[for="file-input"] {
+            border: 1px solid #d4b3ff;
+            padding: 8px 20px;
+            border-radius: 12px;
+            background-color: #e8d9ff;
+            color: #4b2f8c;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        label[for="file-input"]:hover {
+            background-color: #d4b3ff;
+            color: white;
         }
 
         button {
@@ -76,26 +67,6 @@
         button:hover {
             background-color: #b891ff;
             color: white;
-        }
-
-        /* Contenedor de columnas detectadas */
-        .columns-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .column-badge {
-            background-color: #f0e6ff;
-            border: 1px solid #d4b3ff;
-            border-radius: 12px;
-            padding: 5px 12px;
-            font-size: 0.9em;
-            color: #4b2f8c;
-            display: flex;
-            align-items: center;
         }
 
         table {
@@ -128,28 +99,32 @@
         <p class="error">{{ error }}</p>
         {% endif %}
 
-        <p>Sube tu CSV y luego selecciona las columnas que quieres analizar.</p>
-
         <!-- Formulario de subida de CSV -->
         <form action="/upload" method="post" enctype="multipart/form-data">
-            <label class="custom-file-upload" id="file-label">
-                Seleccionar CSV
-                <input type="file" name="file" id="file-input" required>
-            </label>
+            <label for="file-input">Seleccionar CSV</label>
+            <input type="file" name="file" id="file-input" required>
+            <br><br>
             <button type="submit">Subir CSV</button>
         </form>
 
-        <!-- Columnas detectadas como badges -->
+        <!-- Preview del CSV -->
+        {% if info %}
+        <h2>Preview de {{ filename }}</h2>
+        <p>Filas: {{ info.num_filas }}, Columnas: {{ info.num_columnas }}</p>
+        {{ info.primeras_filas | safe }}
+        {% endif %}
+
+        <!-- Columnas detectadas -->
         {% if columns and filename %}
         <h2>Columnas detectadas para {{ filename }}</h2>
         <form action="/process" method="post">
-            <div class="columns-container">
+            <div>
                 {% for col in columns %}
-                <label class="column-badge">
+                <label>
                     <input type="checkbox" name="selected_columns" value="{{ col }}" checked>
                     {{ col }}
                 </label>
-                {% endfor %}
+            {% endfor %}
             </div>
             <label for="limit">Valores a mostrar:</label>
             <input type="number" name="limit" value="5" min="1">
@@ -175,10 +150,10 @@
         {% endif %}
     </div>
 
-    <!-- Script para mostrar nombre de archivo -->
     <script>
+        // Mostrar nombre del archivo seleccionado
         const fileInput = document.getElementById('file-input');
-        const fileLabel = document.getElementById('file-label');
+        const fileLabel = document.querySelector('label[for="file-input"]');
 
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
